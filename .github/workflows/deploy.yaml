@@ -16,6 +16,9 @@ jobs:
   deploy:
     name: Build & Notify Humanitec
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env-name: ["development1", "staging"]
     steps:
       - uses: actions/checkout@v3
       - name: Set Tag with SHA
@@ -67,4 +70,4 @@ jobs:
               image: $ECR/$IMAGE:$TAG
           EOF
 
-          ./score-humanitec delta --env development --overrides ./humanitec.score.yaml --app pod-app --org="${{ secrets.HUMANITEC_ORG_ID_POC_12 }}" --token "${{ secrets.HUMANITEC_TOKEN_POC_12 }}" --deploy
+          ./score-humanitec delta --env ${{ matrix.env-name }} --overrides ./humanitec.score.yaml --app pod-app --org="${{ secrets.HUMANITEC_ORG_ID_POC_12 }}" --token "${{ secrets.HUMANITEC_TOKEN_POC_12 }}" --deploy
